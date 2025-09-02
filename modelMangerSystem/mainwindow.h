@@ -2,6 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStackedLayout>
+
+class LoginPage;
+class ForgotPasswordPage;
+class StoreSelectionPage;
+class HomePage;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,7 +21,21 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void showForgotPasswordPage();
+    void showLoginPage();
+    void handleLogin(const QString &username, const QString &password, bool rememberAccount);
+    void handleStoreEntered(int storeId);
+
 private:
-    Ui::MainWindow *ui;
+    void setupUI();
+    void applyFramelessFullScreen();
+
+private:
+    QStackedLayout *stackLayout;
+    LoginPage *loginPage;
+    ForgotPasswordPage *forgotPasswordPage;
+    StoreSelectionPage *storeSelectionPage;
+    HomePage *homePage;
 };
 #endif // MAINWINDOW_H

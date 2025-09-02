@@ -10,13 +10,23 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    loginpage.cpp \
+    forgotpasswordpage.cpp \
+    storeselectionpage.cpp \
+    homepage.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    loginpage.h \
+    forgotpasswordpage.h \
+    storeselectionpage.h \
+    homepage.h
 
-FORMS += \
-    mainwindow.ui
+RESOURCES += \
+    resources.qrc
+
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

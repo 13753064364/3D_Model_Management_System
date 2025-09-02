@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/background.jpg</file>
+        <file>images/logo_small.png</file>
+        <file>images/logo_big.png</file>
+        <file>images/search_icon.png</file>
+        <file>images/add_customer.png</file>
+        <file>images/customer_profile.png</file>
+        <file>images/model_view.png</file>
+        <file>images/photo_imaging.png</file>
+        <file>images/system_settings.png</file>
+    </qresource>
+</RCC>
