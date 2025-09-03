@@ -1,4 +1,4 @@
-#include "storeselectionpage.h"
+﻿#include "storeselectionpage.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -23,36 +23,16 @@ void StoreSelectionPage::setupUI()
     titleLabel = new QLabel("选择门店");
     titleLabel->setAlignment(Qt::AlignCenter);
 
-    table = new QTableWidget(3, 3);
+    table = new QTableWidget(1, 3);
     table->setHorizontalHeaderLabels(QStringList() << "门店名称" << "位置" << "操作");
     table->setMinimumWidth(600);
 
-    QStringList stores = {"门店1", "门店2", "门店3"};
-    QStringList locations = {"航海路", "五一广场", "市民中心"};
 
-    for (int i = 0; i < 3; ++i) {
-        QTableWidgetItem *storeItem = new QTableWidgetItem(stores[i]);
-        storeItem->setTextAlignment(Qt::AlignCenter);
-        table->setItem(i, 0, storeItem);
-
-        QTableWidgetItem *locationItem = new QTableWidgetItem(locations[i]);
-        locationItem->setTextAlignment(Qt::AlignCenter);
-        table->setItem(i, 1, locationItem);
-
-        QWidget *btnWidget = new QWidget();
-        QHBoxLayout *btnLayout = new QHBoxLayout(btnWidget);
-        QPushButton *enterBtn = new QPushButton("进入");
-        enterBtn->setObjectName("enterBtn");
-        enterBtn->setFixedWidth(60);
-        btnLayout->addWidget(enterBtn);
-        btnLayout->setAlignment(Qt::AlignCenter);
-        btnLayout->setContentsMargins(0, 0, 0, 0);
-        table->setCellWidget(i, 2, btnWidget);
-
-        connect(enterBtn, &QPushButton::clicked, this, [this, i]() {
-            emit storeEntered(i + 1);
-        });
-    }
+    table->setRowCount(1);
+    QTableWidgetItem *loadingItem = new QTableWidgetItem("正在加载门店信息...");
+    loadingItem->setTextAlignment(Qt::AlignCenter);
+    table->setItem(0, 0, loadingItem);
+    table->setSpan(0, 0, 1, 3);
 
     table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
@@ -67,6 +47,62 @@ void StoreSelectionPage::setupUI()
 
     mainLayout->setSpacing(20);
     mainLayout->setContentsMargins(30, 30, 30, 30);
+
+}
+
+void StoreSelectionPage::updateStoreList(const QStringList &storeNames, const QStringList &storeLocations)
+{
+    qDebug() << "更新门店列表，门店数量:" << storeNames.size();
+    qDebug() << "门店名称:" << storeNames;
+    qDebug() << "门店位置:" << storeLocations;
+    
+
+    table->setRowCount(0);
+    
+
+    int rowCount = storeNames.size();
+    table->setRowCount(rowCount);
+    qDebug() << "设置表格行数:" << rowCount;
+    
+
+    for (int i = 0; i < rowCount; ++i) {
+        // 门店名称
+        QTableWidgetItem *storeItem = new QTableWidgetItem(storeNames[i]);
+        storeItem->setTextAlignment(Qt::AlignCenter);
+        table->setItem(i, 0, storeItem);
+        
+        // 门店位置
+        QString location = (i < storeLocations.size()) ? storeLocations[i] : "未知地址";
+        QTableWidgetItem *locationItem = new QTableWidgetItem(location);
+        locationItem->setTextAlignment(Qt::AlignCenter);
+        table->setItem(i, 1, locationItem);
+        
+        // 进入按钮
+        QWidget *btnWidget = new QWidget();
+        QHBoxLayout *btnLayout = new QHBoxLayout(btnWidget);
+        QPushButton *enterBtn = new QPushButton("进入");
+        enterBtn->setObjectName("enterBtn");
+        enterBtn->setFixedWidth(60);
+        btnLayout->addWidget(enterBtn);
+        btnLayout->setAlignment(Qt::AlignCenter);
+        btnLayout->setContentsMargins(0, 0, 0, 0);
+        table->setCellWidget(i, 2, btnWidget);
+        
+
+        connect(enterBtn, &QPushButton::clicked, this, [this, i]() {
+            emit storeEntered(i + 1);
+        });
+    }
+
+    if (rowCount == 0) {
+        table->setRowCount(1);
+        QTableWidgetItem *noDataItem = new QTableWidgetItem("暂无门店数据");
+        noDataItem->setTextAlignment(Qt::AlignCenter);
+        table->setItem(0, 0, noDataItem);
+        table->setSpan(0, 0, 1, 3);
+    }
+    
+    qDebug() << "门店列表更新完成";
 }
 
 void StoreSelectionPage::applyStyles()

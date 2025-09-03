@@ -11,6 +11,9 @@ class StoreSelectionPage : public QWidget
     Q_OBJECT
 public:
     explicit StoreSelectionPage(QWidget *parent = nullptr);
+    
+    // 更新门店列表
+    void updateStoreList(const QStringList &storeNames, const QStringList &storeLocations);
 
 signals:
     void storeEntered(int storeId);

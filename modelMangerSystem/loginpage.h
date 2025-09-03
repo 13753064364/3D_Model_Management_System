@@ -18,6 +18,8 @@ public:
 
     void setBackgroundImage(const QString &imagePath);
     void setLogos(const QString &smallLogoPath, const QString &bigLogoPath);
+    void setSavedAccount(const QString &username, const QString &password, bool remember);
+    void setLoginStatus(const QString &status, const QString &color = "#67C23A");
 
 signals:
     void forgotPasswordRequested();

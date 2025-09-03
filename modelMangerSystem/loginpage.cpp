@@ -588,4 +588,35 @@ void LoginPage::resizeEvent(QResizeEvent *event)
     }
 }
 
+void LoginPage::setSavedAccount(const QString &username, const QString &password, bool remember)
+{
+    if (!username.isEmpty()) {
+        userEdit->setText(username);
+        qDebug() << "设置保存的用户名:" << username;
+    }
+    
+    if (!password.isEmpty()) {
+        pwdEdit->setText(password);
+        qDebug() << "设置保存的密码";
+    }
+    
+    rememberCheck->setChecked(remember);
+    qDebug() << "设置记住账号状态:" << remember;
+}
+
+void LoginPage::setLoginStatus(const QString &status, const QString &color)
+{
+    bottomIdLabel->setText(status);
+    
+
+    QString style = QString("QLabel { color: %1; font-weight: bold; font-size: 14px; }").arg(color);
+    bottomIdLabel->setStyleSheet(style);
+    
+
+    bottomIdLabel->update();
+    
+    qDebug() << "设置登录状态:" << status << "颜色:" << color;
+    qDebug() << "应用的样式:" << style;
+}
+
 
