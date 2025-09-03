@@ -82,10 +82,28 @@ void StoreSelectionPage::updateStoreList(const QStringList &storeNames, const QS
         QHBoxLayout *btnLayout = new QHBoxLayout(btnWidget);
         QPushButton *enterBtn = new QPushButton("进入");
         enterBtn->setObjectName("enterBtn");
-        enterBtn->setFixedWidth(60);
+        enterBtn->setMinimumHeight(30);
+        enterBtn->setStyleSheet(
+            "QPushButton {"
+            "    background-color: transparent;"
+            "    color: #67C23A;"
+            "    border: none;"
+            "    font-size: 14px;"
+            "    font-weight: bold;"
+            "    padding: 5px 10px;"
+            "}"
+            "QPushButton:hover {"
+            "    background-color: transparent;"
+            "    color: #85ce61;"
+            "}"
+            "QPushButton:pressed {"
+            "    background-color: transparent;"
+            "    color: #5daf34;"
+            "}"
+        );
         btnLayout->addWidget(enterBtn);
         btnLayout->setAlignment(Qt::AlignCenter);
-        btnLayout->setContentsMargins(0, 0, 0, 0);
+        btnLayout->setContentsMargins(10, 5, 10, 5);
         table->setCellWidget(i, 2, btnWidget);
         
 
@@ -114,17 +132,25 @@ void StoreSelectionPage::applyStyles()
             QHeaderView::section { background-color: #f5f7fa; color: #606266; font-weight: bold; height: 40px; border: none; }
             QTableWidget::item { padding: 10px; color: #606266; }
             QPushButton#enterBtn { 
-                background: none; 
-                color: #409eff; 
-                border: none; 
-                font-size: 13px; 
-                text-decoration: underline;
+                background-color: transparent !important; 
+                color: #67C23A !important; 
+                border: none !important; 
+                font-size: 14px !important; 
+                font-weight: bold !important;
+                text-decoration: none !important;
+                padding: 5px 10px !important;
             }
             QPushButton#enterBtn:hover { 
-                color: #66b1ff; 
+                background-color: transparent !important;
+                color: #85ce61 !important; 
             }
             QPushButton#enterBtn:pressed { 
-                color: #3a8ee6; 
+                background-color: transparent !important;
+                color: #5daf34 !important; 
+            }
+            QPushButton#enterBtn:focus { 
+                background-color: transparent !important;
+                color: #67C23A !important; 
             }
         )");
 }

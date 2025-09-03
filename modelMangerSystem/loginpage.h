@@ -28,6 +28,8 @@ signals:
 private slots:
     void onForgotPasswordClicked();
     void onLoginClicked();
+    void onUserAgreementClicked();
+    void onPrivacyAgreementClicked();
 
 private:
     void setupUI();
@@ -48,6 +50,8 @@ private:
     QLabel *pwdLabel;
     QLineEdit *pwdEdit;
     QCheckBox *agreementCheck;
+    QLabel *userAgreementLabel;
+    QLabel *privacyAgreementLabel;
     QCheckBox *rememberCheck;
     QLabel *forgotLabel;
     QPushButton *loginBtn;
