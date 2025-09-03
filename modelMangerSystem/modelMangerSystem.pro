@@ -1,8 +1,10 @@
-QT       += core gui network
+QT       += core gui network serialport webenginewidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
+
+DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
@@ -11,7 +13,12 @@ SOURCES += \
     forgotpasswordpage.cpp \
     storeselectionpage.cpp \
     homepage.cpp \
+    addcustomerpage.cpp \
     networkmanager.cpp \
+    $$PWD/drivers/camera.cpp \
+    $$PWD/drivers/ledcontroller.cpp \
+    camerathread.cpp \
+    widget.cpp \
     configmanager.cpp
 
 HEADERS += \
@@ -20,8 +27,13 @@ HEADERS += \
     forgotpasswordpage.h \
     storeselectionpage.h \
     homepage.h \
+    addcustomerpage.h \
     networkmanager.h \
     configmanager.h \
+    $$PWD/drivers/camera.h \
+    $$PWD/drivers/ledcontroller.h \
+    camerathread.h \
+    widget.h \
     3rd/include/CameraParams.h \
     3rd/include/MvCameraControl.h \
     3rd/include/MvErrorDefine.h \
@@ -30,6 +42,10 @@ HEADERS += \
     3rd/include/MvSdkExport.h \
     3rd/include/ObsoleteCamParams.h \
     3rd/include/PixelType.h
+
+
+FORMS += \
+    widget.ui
 
 RESOURCES += \
     resources.qrc

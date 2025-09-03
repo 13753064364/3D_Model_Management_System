@@ -2,11 +2,19 @@
 #define HOMEPAGE_H
 
 #include <QWidget>
+#include "widget.h"
 
 class QLabel;
 class QLineEdit;
 class QPushButton;
 class QHBoxLayout;
+class QTabWidget;
+class QWidget;
+class QComboBox;
+class QTextEdit;
+class QVBoxLayout;
+class QGridLayout;
+class AddCustomerPage;
 
 class HomePage : public QWidget
 {
@@ -25,10 +33,14 @@ signals:
     void modelViewClicked();
     void photoImagingClicked();
     void systemSettingsClicked();
+    void tabClosed(int index);
 
 private slots:
     void onSearchTextChanged(const QString &text);
     void onSearchReturnPressed();
+    void onCardClicked();
+    void onTabCloseRequested(int index);
+    void onTabChanged(int index);
 
 private:
     void setupUI();
@@ -49,6 +61,16 @@ private:
     QPushButton *btnModelView;
     QPushButton *btnPhotoImaging;
     QPushButton *btnSystemSettings;
+    
+    QWidget *searchWidget;
+    QWidget *cardsWidget;
+    QTabWidget *tabWidget;
+    
+    AddCustomerPage *addCustomerPage;
+    QWidget *customerProfilePage;
+    QWidget *modelViewPage;
+    Widget *photoImagingPage;
+    QWidget *systemSettingsPage;
 };
 
 #endif // HOMEPAGE_H

@@ -1,4 +1,4 @@
-#include "homepage.h"
+﻿#include "homepage.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -8,6 +8,12 @@
 #include <QSpacerItem>
 #include <QApplication>
 #include <QScreen>
+#include <QTabWidget>
+#include <QStackedWidget>
+#include <QComboBox>
+#include <QTextEdit>
+#include <QGridLayout>
+#include "addcustomerpage.h"
 
 HomePage::HomePage(QWidget *parent)
     : QWidget(parent)
@@ -24,15 +30,15 @@ void HomePage::setupUI()
 
     QWidget *headerWidget = new QWidget();
     headerWidget->setObjectName("headerWidget");
-    headerWidget->setFixedHeight(60);
+    headerWidget->setFixedHeight(80);
     QHBoxLayout *headerLayout = new QHBoxLayout(headerWidget);
-    headerLayout->setContentsMargins(20, 10, 20, 10);
+    headerLayout->setContentsMargins(30, 15, 30, 15);
 
     QHBoxLayout *leftLayout = new QHBoxLayout();
     leftLayout->setSpacing(12);
     logoLabel = new QLabel();
     logoLabel->setObjectName("headerLogo");
-    logoLabel->setFixedSize(40, 40);
+    logoLabel->setFixedSize(50, 50);
     titleLabel = new QLabel("3D模型管理系统");
     titleLabel->setObjectName("headerTitle");
     leftLayout->addWidget(logoLabel);
@@ -44,7 +50,7 @@ void HomePage::setupUI()
     userInfoLabel->setObjectName("userInfo");
     userAvatarLabel = new QLabel();
     userAvatarLabel->setObjectName("userAvatar");
-    userAvatarLabel->setFixedSize(32, 32);
+    userAvatarLabel->setFixedSize(40, 40);
     userLayout->addWidget(userInfoLabel);
     userLayout->addWidget(userAvatarLabel);
 
@@ -52,32 +58,61 @@ void HomePage::setupUI()
     headerLayout->addStretch();
     headerLayout->addLayout(userLayout);
 
-    QWidget *contentWidget = new QWidget();
-    contentWidget->setObjectName("contentWidget");
-    QVBoxLayout *contentLayout = new QVBoxLayout(contentWidget);
-    contentLayout->setContentsMargins(60, 40, 60, 40);
-    contentLayout->setSpacing(40);
+    mainLayout->addWidget(headerWidget);
+
+    // 创建背景容器
+    QWidget *backgroundContainer = new QWidget();
+    backgroundContainer->setObjectName("backgroundContainer");
+    QVBoxLayout *backgroundLayout = new QVBoxLayout(backgroundContainer);
+    backgroundLayout->setContentsMargins(0, 0, 0, 0);
+    backgroundLayout->setSpacing(0);
+
+    // 创建搜索区域
+    searchWidget = new QWidget();
+    searchWidget->setObjectName("searchWidget");
+    searchWidget->setStyleSheet("background-color: transparent;");
+    QVBoxLayout *searchContentLayout = new QVBoxLayout(searchWidget);
+    searchContentLayout->setContentsMargins(60, 40, 60, 40);
+    searchContentLayout->setSpacing(40);
     
-    contentLayout->addStretch(1);
+    searchContentLayout->addStretch(1);
 
     QHBoxLayout *searchLayout = new QHBoxLayout();
-    searchLayout->setSpacing(8);
+    searchLayout->setSpacing(0);
+    searchLayout->setContentsMargins(0, 0, 0, 0);
+    
+    // 创建搜索框容器
+    QWidget *searchContainer = new QWidget();
+    searchContainer->setObjectName("searchContainer");
+    QHBoxLayout *containerLayout = new QHBoxLayout(searchContainer);
+    containerLayout->setContentsMargins(0, 0, 0, 0);
+    containerLayout->setSpacing(0);
+    
     searchEdit = new QLineEdit();
     searchEdit->setObjectName("searchEdit");
     searchEdit->setPlaceholderText("请输入姓名或手机号");
-    searchEdit->setMinimumHeight(40);
+    searchEdit->setMinimumHeight(50);
     
     searchBtn = new QPushButton();
     searchBtn->setObjectName("searchBtn");
-    searchBtn->setFixedSize(40, 40);
+    searchBtn->setFixedSize(50, 50);
     searchBtn->setIcon(QIcon(":/images/images/search_icon.png"));
     
-    searchLayout->addWidget(searchEdit);
-    searchLayout->addWidget(searchBtn);
+    containerLayout->addWidget(searchEdit);
+    containerLayout->addWidget(searchBtn);
+    
+    searchLayout->addWidget(searchContainer);
 
     connect(searchEdit, &QLineEdit::textChanged, this, &HomePage::onSearchTextChanged);
     connect(searchEdit, &QLineEdit::returnPressed, this, &HomePage::onSearchReturnPressed);
     connect(searchBtn, &QPushButton::clicked, this, &HomePage::onSearchReturnPressed);
+
+    // 创建卡片区域
+    cardsWidget = new QWidget();
+    cardsWidget->setStyleSheet("background-color: transparent;");
+    QVBoxLayout *cardsContentLayout = new QVBoxLayout(cardsWidget);
+    cardsContentLayout->setContentsMargins(60, 0, 60, 40);
+    cardsContentLayout->setSpacing(40);
 
     QHBoxLayout *cardsLayout = new QHBoxLayout();
     cardsLayout->setContentsMargins(0, 0, 0, 0);
@@ -92,26 +127,54 @@ void HomePage::setupUI()
     
     cardsLayout->addStretch();
 
-    connect(btnAddCustomer, &QPushButton::clicked, this, &HomePage::addCustomerClicked);
-    connect(btnCustomerProfile, &QPushButton::clicked, this, &HomePage::customerProfileClicked);
-    connect(btnModelView, &QPushButton::clicked, this, &HomePage::modelViewClicked);
-    connect(btnPhotoImaging, &QPushButton::clicked, this, &HomePage::photoImagingClicked);
-    connect(btnSystemSettings, &QPushButton::clicked, this, &HomePage::systemSettingsClicked);
+    connect(btnAddCustomer, &QPushButton::clicked, this, &HomePage::onCardClicked);
+    connect(btnCustomerProfile, &QPushButton::clicked, this, &HomePage::onCardClicked);
+    connect(btnModelView, &QPushButton::clicked, this, &HomePage::onCardClicked);
+    connect(btnPhotoImaging, &QPushButton::clicked, this, &HomePage::onCardClicked);
+    connect(btnSystemSettings, &QPushButton::clicked, this, &HomePage::onCardClicked);
 
-    contentLayout->addLayout(searchLayout);
-    contentLayout->addStretch(2);
-    contentLayout->addLayout(cardsLayout);
-    contentLayout->addStretch(2);
+    searchContentLayout->addLayout(searchLayout);
+    searchContentLayout->addStretch(2);
+    searchContentLayout->addLayout(cardsLayout);
+    searchContentLayout->addStretch(2);
 
-    mainLayout->addWidget(headerWidget);
-    mainLayout->addWidget(contentWidget);
+    tabWidget = new QTabWidget();
+    tabWidget->setObjectName("tabWidget");
+    tabWidget->setTabsClosable(true);
+    tabWidget->setMovable(true);
+    tabWidget->setStyleSheet("QTabWidget::pane { background: transparent; border: none; }");
+
+    addCustomerPage = new AddCustomerPage();
+    customerProfilePage = new QWidget();
+    customerProfilePage->setStyleSheet("background-color: #ffffff;");
+    modelViewPage = new QWidget();
+    modelViewPage->setStyleSheet("background-color: #ffffff;");
+    photoImagingPage = new Widget();
+    photoImagingPage->setStyleSheet("background-color: #ffffff;");
+    systemSettingsPage = new QWidget();
+    systemSettingsPage->setStyleSheet("background-color: #ffffff;");
+
+    QWidget *homePage = new QWidget();
+    homePage->setObjectName("homePage");
+    homePage->setStyleSheet("background-color: transparent !important;");
+    homePage->setAttribute(Qt::WA_OpaquePaintEvent, false);
+    QVBoxLayout *homeLayout = new QVBoxLayout(homePage);
+    homeLayout->setContentsMargins(0, 0, 0, 0);
+    homeLayout->addWidget(searchWidget);
+    homeLayout->addWidget(cardsWidget);
+    tabWidget->addTab(homePage, "主页");
+
+    connect(tabWidget, &QTabWidget::tabCloseRequested, this, &HomePage::onTabCloseRequested);
+    connect(tabWidget, &QTabWidget::currentChanged, this, &HomePage::onTabChanged);
+
+    backgroundLayout->addWidget(tabWidget);
+    mainLayout->addWidget(backgroundContainer);
 }
 
 void HomePage::applyStyles()
 {
     setStyleSheet(R"(
         QWidget { 
-            background-color: #f5f5f5; 
             font-family: "Microsoft YaHei", "Segoe UI", sans-serif; 
         }
         
@@ -124,44 +187,68 @@ void HomePage::applyStyles()
             background: transparent; 
         }
         QLabel#headerTitle { 
-            font-size: 20pt; 
+            font-size: 24pt; 
             font-weight: bold; 
             color: #2c3e50; 
             background: transparent;
         }
         QLabel#userInfo { 
             color: #606266; 
-            font-size: 16px; 
+            font-size: 18px; 
             background: transparent;
         }
         QLabel#userAvatar { 
             background: #409eff; 
-            border-radius: 16px; 
+            border-radius: 20px; 
         }
         
-        /* 内容区域样式 */
-        QWidget#contentWidget { 
+        /* 背景容器样式 */
+        QWidget#backgroundContainer { 
             background: url(':/images/images/background.jpg'); 
             background-position: center; 
             background-repeat: no-repeat; 
             background-size: cover; 
         }
         
+        /* 主页标签页透明 */
+        QWidget#homePage {
+            background: transparent !important;
+        }
+        
         /* 搜索区域样式 */
+        QWidget#searchWidget {
+            background: transparent;
+        }
+        
+        /* 搜索容器样式 */
+        QWidget#searchContainer {
+            background: #ffffff;
+            border: 1px solid #dcdfe6;
+            border-radius: 6px;
+        }
+        QWidget#searchContainer:focus-within {
+            border-color: #409eff;
+        }
+        
+        /* 搜索框样式 */
         QLineEdit#searchEdit { 
-            background: #ffffff; 
-            border: 1px solid #dcdfe6; 
-            border-radius: 6px; 
-            padding: 10px 12px; 
-            font-size: 16px; 
+            background: transparent; 
+            border: none; 
+            padding: 12px 15px; 
+            font-size: 18px; 
         }
         QLineEdit#searchEdit:focus { 
-            border-color: #409eff; 
+            border: none;
+            outline: none;
         }
+        
+        /* 搜索按钮样式 */
         QPushButton#searchBtn { 
             background: transparent; 
             border: none; 
-            border-radius: 6px; 
+            border-left: 1px solid #dcdfe6;
+            border-radius: 0px;
+            margin: 0px;
         }
         QPushButton#searchBtn:hover { 
             background: rgba(64, 158, 255, 0.1); 
@@ -194,6 +281,59 @@ void HomePage::applyStyles()
             font-size: 16px; 
             font-weight: 600; 
             background: transparent;
+        }
+        
+        /* 标签页样式 */
+        QTabWidget#tabWidget {
+            background: transparent;
+            border: none;
+        }
+        QTabWidget::pane {
+            border: none;
+            background: transparent;
+        }
+        QTabWidget::pane[tabIndex="0"] {
+            background: transparent !important;
+        }
+        QTabBar::tab {
+            background: #f5f5f5;
+            color: #606266;
+            padding: 8px 16px;
+            margin-right: 2px;
+            border: 1px solid #e0e0e0;
+            border-bottom: none;
+            border-radius: 8px 8px 0px 0px;
+            min-width: 80px;
+        }
+        QTabBar::tab:selected {
+            background: #ffffff;
+            color: #409eff;
+            border-bottom: 1px solid #ffffff;
+            border-radius: 8px 8px 0px 0px;
+        }
+        QTabBar::tab:hover {
+            background: #ecf5ff;
+            color: #409eff;
+            border-radius: 8px 8px 0px 0px;
+        }
+        QTabBar::close-button {
+            image: none;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            width: 16px;
+            height: 16px;
+            margin-left: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #909399;
+        }
+        QTabBar::close-button:hover {
+            background: #f56c6c;
+            color: #ffffff;
+        }
+        QTabBar::close-button::after {
+            content: "×";
         }
     )");
 }
@@ -282,5 +422,71 @@ void HomePage::createFunctionCard(const QString &title, const QString &iconPath,
     
     layout->addWidget(*button);
 }
+
+void HomePage::onCardClicked()
+{
+    QPushButton *sender = qobject_cast<QPushButton*>(QObject::sender());
+    if (!sender) return;
+
+    QString tabTitle;
+    QWidget *page = nullptr;
+
+    if (sender == btnAddCustomer) {
+        tabTitle = "添加顾客";
+        page = addCustomerPage;
+        emit addCustomerClicked();
+    } else if (sender == btnCustomerProfile) {
+        tabTitle = "顾客档案";
+        page = customerProfilePage;
+        emit customerProfileClicked();
+    } else if (sender == btnModelView) {
+        tabTitle = "3D模型查看";
+        page = modelViewPage;
+        emit modelViewClicked();
+    } else if (sender == btnPhotoImaging) {
+        tabTitle = "拍摄影像";
+        page = photoImagingPage;
+        emit photoImagingClicked();
+    } else if (sender == btnSystemSettings) {
+        tabTitle = "系统管理";
+        page = systemSettingsPage;
+        emit systemSettingsClicked();
+    }
+
+    if (page && !tabTitle.isEmpty()) {
+        for (int i = 0; i < tabWidget->count(); ++i) {
+            if (tabWidget->tabText(i) == tabTitle) {
+                tabWidget->setCurrentIndex(i);
+                return;
+            }
+        }
+
+        tabWidget->addTab(page, tabTitle);
+        tabWidget->setCurrentWidget(page);
+    }
+}
+
+void HomePage::onTabCloseRequested(int index)
+{
+    if (index > 0) {
+        tabWidget->removeTab(index);
+        emit tabClosed(index);
+    }
+}
+
+void HomePage::onTabChanged(int index)
+{
+
+    if (index == 0) {
+        QWidget *homePage = tabWidget->widget(0);
+        if (homePage) {
+            homePage->setStyleSheet("background-color: transparent !important;");
+            homePage->setAttribute(Qt::WA_OpaquePaintEvent, false);
+            homePage->update();
+        }
+    }
+}
+
+
 
 

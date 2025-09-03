@@ -2,7 +2,6 @@
 #define CAMERA_H
 
 #include "MvCameraControl.h"
-#pragma execution_character_set("utf-8")
 class Camera
 {
 public:
