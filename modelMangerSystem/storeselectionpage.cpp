@@ -8,6 +8,8 @@
 #include <QTableWidgetItem>
 #include <QPushButton>
 #include <QDebug>
+#include <QEvent>
+#include <QMouseEvent>
 
 StoreSelectionPage::StoreSelectionPage(QWidget *parent)
     : QWidget(parent)
@@ -41,6 +43,17 @@ void StoreSelectionPage::setupUI()
     table->verticalHeader()->setVisible(false);
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
     table->setSelectionBehavior(QAbstractItemView::SelectRows);
+    
+    // 连接表格点击事件
+    connect(table, &QTableWidget::cellClicked, this, [this](int row, int column) {
+        if (column == 2) { // 操作列
+            QTableWidgetItem *item = table->item(row, column);
+            if (item && item->data(Qt::UserRole).isValid()) {
+                int storeIndex = item->data(Qt::UserRole).toInt();
+                emit storeEntered(storeIndex + 1);
+            }
+        }
+    });
 
     mainLayout->addWidget(titleLabel);
     mainLayout->addWidget(table);
@@ -77,39 +90,12 @@ void StoreSelectionPage::updateStoreList(const QStringList &storeNames, const QS
         locationItem->setTextAlignment(Qt::AlignCenter);
         table->setItem(i, 1, locationItem);
         
-        // 进入按钮
-        QWidget *btnWidget = new QWidget();
-        QHBoxLayout *btnLayout = new QHBoxLayout(btnWidget);
-        QPushButton *enterBtn = new QPushButton("进入");
-        enterBtn->setObjectName("enterBtn");
-        enterBtn->setMinimumHeight(30);
-        enterBtn->setStyleSheet(
-            "QPushButton {"
-            "    background-color: transparent;"
-            "    color: #67C23A;"
-            "    border: none;"
-            "    font-size: 14px;"
-            "    font-weight: bold;"
-            "    padding: 5px 10px;"
-            "}"
-            "QPushButton:hover {"
-            "    background-color: transparent;"
-            "    color: #85ce61;"
-            "}"
-            "QPushButton:pressed {"
-            "    background-color: transparent;"
-            "    color: #5daf34;"
-            "}"
-        );
-        btnLayout->addWidget(enterBtn);
-        btnLayout->setAlignment(Qt::AlignCenter);
-        btnLayout->setContentsMargins(10, 5, 10, 5);
-        table->setCellWidget(i, 2, btnWidget);
-        
-
-        connect(enterBtn, &QPushButton::clicked, this, [this, i]() {
-            emit storeEntered(i + 1);
-        });
+        // 操作列 - 可点击的绿色文字
+        QTableWidgetItem *operationItem = new QTableWidgetItem("进入");
+        operationItem->setTextAlignment(Qt::AlignCenter);
+        operationItem->setData(Qt::UserRole, i); // 存储索引
+        operationItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+        table->setItem(i, 2, operationItem);
     }
 
     if (rowCount == 0) {
@@ -131,6 +117,8 @@ void StoreSelectionPage::applyStyles()
             QTableWidget { background-color: white; border: 1px solid #dcdfe6; border-radius: 4px; gridline-color: #ebeef5; font-size: 14px; }
             QHeaderView::section { background-color: #f5f7fa; color: #606266; font-weight: bold; height: 40px; border: none; }
             QTableWidget::item { padding: 10px; color: #606266; }
+            QTableWidget::item[column="2"] { color: #67C23A; font-weight: bold; }
+            QTableWidget::item[column="2"]:hover { color: #85ce61; }
             QPushButton#enterBtn { 
                 background-color: transparent !important; 
                 color: #67C23A !important; 
@@ -153,6 +141,22 @@ void StoreSelectionPage::applyStyles()
                 color: #67C23A !important; 
             }
         )");
+}
+
+bool StoreSelectionPage::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        if (mouseEvent->button() == Qt::LeftButton) {
+            QLabel *label = qobject_cast<QLabel*>(obj);
+            if (label && label->property("storeIndex").isValid()) {
+                int storeIndex = label->property("storeIndex").toInt();
+                emit storeEntered(storeIndex + 1);
+                return true;
+            }
+        }
+    }
+    return QWidget::eventFilter(obj, event);
 }
 
 

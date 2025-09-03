@@ -21,7 +21,15 @@ HEADERS += \
     storeselectionpage.h \
     homepage.h \
     networkmanager.h \
-    configmanager.h
+    configmanager.h \
+    3rd/include/CameraParams.h \
+    3rd/include/MvCameraControl.h \
+    3rd/include/MvErrorDefine.h \
+    3rd/include/MvISPErrorDefine.h \
+    3rd/include/MvObsoleteInterfaces.h \
+    3rd/include/MvSdkExport.h \
+    3rd/include/ObsoleteCamParams.h \
+    3rd/include/PixelType.h
 
 RESOURCES += \
     resources.qrc
@@ -32,7 +40,10 @@ msvc {
     QMAKE_CXXFLAGS += /utf-8
 }
 
-# Default rules for deployment.
+
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+INCLUDEPATH += $$PWD/3rd/HKSDK/include
+LIBS += -L$$PWD/3rd/HKSDK/libs -lMvCameraControl

@@ -21,6 +21,7 @@ signals:
 private:
     void setupUI();
     void applyStyles();
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
     QLabel *titleLabel;
