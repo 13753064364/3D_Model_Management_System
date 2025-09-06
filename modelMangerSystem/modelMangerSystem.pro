@@ -14,6 +14,7 @@ SOURCES += \
     storeselectionpage.cpp \
     homepage.cpp \
     addcustomerpage.cpp \
+    customerprofilepage.cpp \
     networkmanager.cpp \
     $$PWD/drivers/camera.cpp \
     $$PWD/drivers/ledcontroller.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     storeselectionpage.h \
     homepage.h \
     addcustomerpage.h \
+    customerprofilepage.h \
     networkmanager.h \
     configmanager.h \
     $$PWD/drivers/camera.h \

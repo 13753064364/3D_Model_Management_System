@@ -15,6 +15,7 @@ class QTextEdit;
 class QVBoxLayout;
 class QGridLayout;
 class AddCustomerPage;
+class CustomerProfilePage;
 
 class HomePage : public QWidget
 {
@@ -67,7 +68,7 @@ private:
     QTabWidget *tabWidget;
     
     AddCustomerPage *addCustomerPage;
-    QWidget *customerProfilePage;
+    CustomerProfilePage *customerProfilePage;
     QWidget *modelViewPage;
     Widget *photoImagingPage;
     QWidget *systemSettingsPage;

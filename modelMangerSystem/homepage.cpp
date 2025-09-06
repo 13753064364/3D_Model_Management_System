@@ -14,6 +14,7 @@
 #include <QTextEdit>
 #include <QGridLayout>
 #include "addcustomerpage.h"
+#include "customerprofilepage.h"
 
 HomePage::HomePage(QWidget *parent)
     : QWidget(parent)
@@ -145,8 +146,7 @@ void HomePage::setupUI()
     tabWidget->setStyleSheet("QTabWidget::pane { background: transparent; border: none; }");
 
     addCustomerPage = new AddCustomerPage();
-    customerProfilePage = new QWidget();
-    customerProfilePage->setStyleSheet("background-color: #ffffff;");
+    customerProfilePage = new CustomerProfilePage();
     modelViewPage = new QWidget();
     modelViewPage->setStyleSheet("background-color: #ffffff;");
     photoImagingPage = new Widget();
