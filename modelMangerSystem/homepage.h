@@ -16,6 +16,8 @@ class QVBoxLayout;
 class QGridLayout;
 class AddCustomerPage;
 class CustomerProfilePage;
+class PhotoImagingPage;
+class ApiDebugDialog;
 class QMenu;
 class QAction;
 
@@ -40,6 +42,7 @@ signals:
     void tabClosed(int index);
     void userInfoClicked();
     void changePasswordClicked();
+    void apiDebugClicked();
     void logoutClicked();
 
 private slots:
@@ -52,6 +55,7 @@ private slots:
     void onUserInfoAction();
     void onChangePasswordAction();
     void onSystemSettingsAction();
+    void onApiDebugAction();
     void onLogoutAction();
 
 private:
@@ -83,7 +87,7 @@ private:
     AddCustomerPage *addCustomerPage;
     CustomerProfilePage *customerProfilePage;
     QWidget *modelViewPage;
-    Widget *photoImagingPage;
+    PhotoImagingPage *photoImagingPage;
     QWidget *systemSettingsPage;
     
     // 用户头像下拉菜单相关
@@ -91,6 +95,7 @@ private:
     QAction *userInfoAction;
     QAction *changePasswordAction;
     QAction *systemSettingsAction;
+    QAction *apiDebugAction;
     QAction *logoutAction;
 };
 

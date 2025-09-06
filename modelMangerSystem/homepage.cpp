@@ -19,6 +19,7 @@
 #include <QDebug>
 #include "addcustomerpage.h"
 #include "customerprofilepage.h"
+#include "photoimagingpage.h"
 
 HomePage::HomePage(QWidget *parent)
     : QWidget(parent)
@@ -26,6 +27,7 @@ HomePage::HomePage(QWidget *parent)
     , userInfoAction(nullptr)
     , changePasswordAction(nullptr)
     , systemSettingsAction(nullptr)
+    , apiDebugAction(nullptr)
     , logoutAction(nullptr)
 {
     setupUI();
@@ -145,6 +147,17 @@ void HomePage::setupUI()
     connect(btnModelView, &QPushButton::clicked, this, &HomePage::onCardClicked);
     connect(btnPhotoImaging, &QPushButton::clicked, this, &HomePage::onCardClicked);
     connect(btnSystemSettings, &QPushButton::clicked, this, &HomePage::onCardClicked);
+    
+    // 连接拍摄影像页面的信号
+    connect(photoImagingPage, &PhotoImagingPage::searchCustomerRequested, this, &HomePage::searchRequested);
+    connect(photoImagingPage, &PhotoImagingPage::startCaptureRequested, this, [this]() {
+        qDebug() << "开始拍摄请求";
+        // 这里可以添加实际的拍摄逻辑
+    });
+    connect(photoImagingPage, &PhotoImagingPage::stopCaptureRequested, this, [this]() {
+        qDebug() << "停止拍摄请求";
+        // 这里可以添加实际的停止拍摄逻辑
+    });
 
     searchContentLayout->addLayout(searchLayout);
     searchContentLayout->addStretch(2);
@@ -161,7 +174,7 @@ void HomePage::setupUI()
     customerProfilePage = new CustomerProfilePage();
     modelViewPage = new QWidget();
     modelViewPage->setStyleSheet("background-color: #ffffff;");
-    photoImagingPage = new Widget();
+    photoImagingPage = new PhotoImagingPage();
     photoImagingPage->setStyleSheet("background-color: #ffffff;");
     systemSettingsPage = new QWidget();
     systemSettingsPage->setStyleSheet("background-color: #ffffff;");
@@ -516,12 +529,14 @@ void HomePage::setupAvatarMenu()
     userInfoAction = new QAction("用户信息", this);
     changePasswordAction = new QAction("修改密码", this);
     systemSettingsAction = new QAction("系统设置", this);
+    apiDebugAction = new QAction("API调试", this);
     logoutAction = new QAction("退出登录", this);
     
 
     avatarMenu->addAction(userInfoAction);
     avatarMenu->addAction(changePasswordAction);
     avatarMenu->addAction(systemSettingsAction);
+    avatarMenu->addAction(apiDebugAction);
     avatarMenu->addSeparator();
     avatarMenu->addAction(logoutAction);
     
@@ -529,6 +544,7 @@ void HomePage::setupAvatarMenu()
     connect(userInfoAction, &QAction::triggered, this, &HomePage::onUserInfoAction);
     connect(changePasswordAction, &QAction::triggered, this, &HomePage::onChangePasswordAction);
     connect(systemSettingsAction, &QAction::triggered, this, &HomePage::onSystemSettingsAction);
+    connect(apiDebugAction, &QAction::triggered, this, &HomePage::onApiDebugAction);
     connect(logoutAction, &QAction::triggered, this, &HomePage::onLogoutAction);
     
 
@@ -593,6 +609,12 @@ void HomePage::onSystemSettingsAction()
 {
     qDebug() << "系统设置被点击";
     emit systemSettingsClicked();
+}
+
+void HomePage::onApiDebugAction()
+{
+    qDebug() << "API调试被点击";
+    emit apiDebugClicked();
 }
 
 void HomePage::onLogoutAction()

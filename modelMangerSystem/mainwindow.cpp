@@ -7,6 +7,7 @@
 #include "networkmanager.h"
 #include "configmanager.h"
 #include "changepassworddialog.h"
+#include "apidebugdialog.h"
 
 #include <QWidget>
 #include <QStackedLayout>
@@ -76,6 +77,7 @@ void MainWindow::setupUI()
     // 连接主页的用户头像下拉菜单信号
     connect(homePage, &HomePage::userInfoClicked, this, &MainWindow::onUserInfoClicked);
     connect(homePage, &HomePage::changePasswordClicked, this, &MainWindow::onChangePasswordClicked);
+    connect(homePage, &HomePage::apiDebugClicked, this, &MainWindow::onApiDebugClicked);
     connect(homePage, &HomePage::logoutClicked, this, &MainWindow::onLogoutClicked);
     
     // 连接顾客档案页面的信号
@@ -253,6 +255,20 @@ void MainWindow::onChangePasswordClicked()
         // 这里可以添加实际的密码修改逻辑
         QMessageBox::information(this, tr("修改密码"), tr("密码修改成功！"));
     });
+    
+    // 显示对话框
+    dialog->exec();
+    
+    // 清理对话框
+    dialog->deleteLater();
+}
+
+void MainWindow::onApiDebugClicked()
+{
+    qDebug() << "API调试被点击";
+    
+    // 创建API调试对话框
+    ApiDebugDialog *dialog = new ApiDebugDialog(this);
     
     // 显示对话框
     dialog->exec();

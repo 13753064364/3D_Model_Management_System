@@ -12,6 +12,7 @@ class HomePage;
 class NetworkManager;
 class ConfigManager;
 class ChangePasswordDialog;
+class ApiDebugDialog;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -43,6 +44,7 @@ private slots:
     // 用户头像下拉菜单槽函数
     void onUserInfoClicked();
     void onChangePasswordClicked();
+    void onApiDebugClicked();
     void onLogoutClicked();
     
     // 顾客档案页面槽函数

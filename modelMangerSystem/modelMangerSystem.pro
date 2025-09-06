@@ -15,13 +15,15 @@ SOURCES += \
     homepage.cpp \
     addcustomerpage.cpp \
     customerprofilepage.cpp \
+    photoimagingpage.cpp \
     networkmanager.cpp \
     $$PWD/drivers/camera.cpp \
     $$PWD/drivers/ledcontroller.cpp \
     camerathread.cpp \
     widget.cpp \
     configmanager.cpp \
-    changepassworddialog.cpp
+    changepassworddialog.cpp \
+    apidebugdialog.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -31,9 +33,11 @@ HEADERS += \
     homepage.h \
     addcustomerpage.h \
     customerprofilepage.h \
+    photoimagingpage.h \
     networkmanager.h \
     configmanager.h \
     changepassworddialog.h \
+    apidebugdialog.h \
     $$PWD/drivers/camera.h \
     $$PWD/drivers/ledcontroller.h \
     camerathread.h \
@@ -66,4 +70,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 INCLUDEPATH += $$PWD/3rd/HKSDK/include
-LIBS += -L$$PWD/3rd/HKSDK/libs -lMvCameraControl
+#LIBS += -L$$PWD/3rd/HKSDK/libs -lMvCameraControl
+win32 { LIBS += -L$$PWD/3rd/HKSDK/libs -lMvCameraControl }
+unix { LIBS += -L/opt/MVS/lib/aarch64/
+    -lMVGigEVisionSDK
+    -lMvCameraControl
+    -lMVRender
+    -lFormatConversion
+    -lMediaProcess }

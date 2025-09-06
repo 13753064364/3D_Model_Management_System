@@ -9,5 +9,9 @@
         <file>images/model_view.png</file>
         <file>images/photo_imaging.png</file>
         <file>images/system_settings.png</file>
+        <file>images/avatar.png</file>
+        <file>images/no_headphone.png</file>
+        <file>images/no_face_cover.png</file>
+        <file>images/close_eyes.png</file>
     </qresource>
 </RCC>
