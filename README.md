@@ -22,6 +22,24 @@
 1. **用户头像 选项列表**
 2. **顾客信息列表优化**、
 
+### 2025年9月7日 开发进度
+
+#### 完成功能
+1. **Jetson nano b01移植调试**
+   win32 {
+    LIBS += -L$$PWD/3rd/HKSDK/libs -lMvCameraControl
+}
+
+unix {
+    LIBS += -L/opt/MVS/lib/aarch64/ \
+            -lMVGigEVisionSDK \
+            -lMvCameraControl \
+            -lMVRender \
+            -lFormatConversion \
+            -lMediaProcess
+}
+
+
 #### 项目结构
 ```
 modelMangerSystem/
