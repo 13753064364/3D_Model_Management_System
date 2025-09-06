@@ -34,3 +34,7 @@ MVS默认安装在 opt/MVS路径下，安装完成后，在MVS文件夹下包含
     Lib（SDK的Lib文件）
     logserver （日志服务）
     Samples（示例程序）
+	
+***Only install HK-SDK（RunTime)
+
+
