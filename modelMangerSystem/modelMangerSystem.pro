@@ -20,7 +20,8 @@ SOURCES += \
     $$PWD/drivers/ledcontroller.cpp \
     camerathread.cpp \
     widget.cpp \
-    configmanager.cpp
+    configmanager.cpp \
+    changepassworddialog.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -32,6 +33,7 @@ HEADERS += \
     customerprofilepage.h \
     networkmanager.h \
     configmanager.h \
+    changepassworddialog.h \
     $$PWD/drivers/camera.h \
     $$PWD/drivers/ledcontroller.h \
     camerathread.h \

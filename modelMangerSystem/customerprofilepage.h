@@ -23,6 +23,7 @@ signals:
     void deleteCustomerRequested(int customerId);
     void editCustomerRequested(int customerId);
     void viewCustomerRequested(int customerId);
+    void startShootingRequested(int customerId);
 
 private slots:
     void onSearchClicked();
@@ -43,24 +44,20 @@ private:
     QWidget* createPaginationBar();
 
 private:
-    // 搜索区域
     QLineEdit *searchEdit;
     QPushButton *searchBtn;
     QPushButton *addBtn;
     QPushButton *deleteBtn;
-    
-    // 表格
+
     QTableWidget *customerTable;
-    
-    // 分页区域
+
     QLabel *pageInfoLabel;
     QPushButton *prevPageBtn;
     QPushButton *nextPageBtn;
     QComboBox *pageSizeCombo;
     QLineEdit *jumpToEdit;
     QPushButton *jumpBtn;
-    
-    // 数据
+
     int currentPage;
     int pageSize;
     int totalCount;

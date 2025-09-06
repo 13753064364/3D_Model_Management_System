@@ -3,8 +3,10 @@
 #include "forgotpasswordpage.h"
 #include "storeselectionpage.h"
 #include "homepage.h"
+#include "customerprofilepage.h"
 #include "networkmanager.h"
 #include "configmanager.h"
+#include "changepassworddialog.h"
 
 #include <QWidget>
 #include <QStackedLayout>
@@ -70,6 +72,20 @@ void MainWindow::setupUI()
     connect(loginPage, &LoginPage::loginRequested, this, &MainWindow::handleLogin);
     connect(forgotPasswordPage, &ForgotPasswordPage::backToLoginRequested, this, &MainWindow::showLoginPage);
     connect(storeSelectionPage, &StoreSelectionPage::storeEntered, this, &MainWindow::handleStoreEntered);
+    
+    // 连接主页的用户头像下拉菜单信号
+    connect(homePage, &HomePage::userInfoClicked, this, &MainWindow::onUserInfoClicked);
+    connect(homePage, &HomePage::changePasswordClicked, this, &MainWindow::onChangePasswordClicked);
+    connect(homePage, &HomePage::logoutClicked, this, &MainWindow::onLogoutClicked);
+    
+    // 连接顾客档案页面的信号
+    connect(homePage, &HomePage::customerProfileClicked, this, [this]() {
+        // 获取顾客档案页面并连接其信号
+        CustomerProfilePage *profilePage = homePage->getCustomerProfilePage();
+        if (profilePage) {
+            connect(profilePage, &CustomerProfilePage::startShootingRequested, this, &MainWindow::onStartShootingRequested);
+        }
+    });
 
     stackLayout->setCurrentWidget(loginPage);
     
@@ -118,7 +134,9 @@ void MainWindow::handleLogin(const QString &username, const QString &password, b
 
 void MainWindow::handleStoreEntered(int storeId)
 {
-    homePage->setUserInfo(tr("用户ID: %1").arg(storeId));
+    // 显示用户名而不是用户ID
+    QString displayText = currentUsername.isEmpty() ? tr("用户ID: %1").arg(storeId) : currentUsername;
+    homePage->setUserInfo(displayText);
     homePage->setHeaderLogo(":/images/images/logo_small.png");
     homePage->setUserAvatar("");
     stackLayout->setCurrentWidget(homePage);
@@ -213,4 +231,56 @@ void MainWindow::loadSavedAccount()
             loginPage->setSavedAccount(savedUsername, savedPassword, true);
         }
     }
+}
+
+void MainWindow::onUserInfoClicked()
+{
+    qDebug() << "用户信息被点击";
+    QMessageBox::information(this, tr("用户信息"), 
+        tr("当前用户: %1\n归属门店: %2").arg(currentUsername).arg(currentShopName));
+}
+
+void MainWindow::onChangePasswordClicked()
+{
+    qDebug() << "修改密码被点击";
+    
+    // 创建修改密码对话框
+    ChangePasswordDialog *dialog = new ChangePasswordDialog(currentUsername, this);
+    
+    // 连接信号
+    connect(dialog, &ChangePasswordDialog::passwordChanged, this, [this](const QString &newPassword) {
+        qDebug() << "用户请求修改密码，新密码长度:" << newPassword.length();
+        // 这里可以添加实际的密码修改逻辑
+        QMessageBox::information(this, tr("修改密码"), tr("密码修改成功！"));
+    });
+    
+    // 显示对话框
+    dialog->exec();
+    
+    // 清理对话框
+    dialog->deleteLater();
+}
+
+void MainWindow::onLogoutClicked()
+{
+    qDebug() << "退出登录被点击";
+    QMessageBox::StandardButton reply = QMessageBox::question(this, tr("退出登录"), 
+        tr("确定要退出登录吗？"), QMessageBox::Yes | QMessageBox::No);
+    
+    if (reply == QMessageBox::Yes) {
+        // 清除当前用户信息
+        currentUsername.clear();
+        currentShopName.clear();
+        
+        // 返回到登录页面
+        stackLayout->setCurrentWidget(loginPage);
+        qDebug() << "用户已退出登录";
+    }
+}
+
+void MainWindow::onStartShootingRequested(int customerId)
+{
+    qDebug() << "开始拍摄被点击，客户ID:" << customerId;
+    QMessageBox::information(this, tr("开始拍摄"), tr("开始为客户ID %1 进行拍摄").arg(customerId));
+    // 这里可以添加实际的拍摄逻辑
 }

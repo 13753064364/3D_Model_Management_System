@@ -16,6 +16,8 @@ class QVBoxLayout;
 class QGridLayout;
 class AddCustomerPage;
 class CustomerProfilePage;
+class QMenu;
+class QAction;
 
 class HomePage : public QWidget
 {
@@ -26,6 +28,7 @@ public:
     void setUserInfo(const QString &infoText);
     void setHeaderLogo(const QString &logoPath);
     void setUserAvatar(const QString &avatarPath);
+    CustomerProfilePage* getCustomerProfilePage() const;
 
 signals:
     void searchRequested(const QString &keyword);
@@ -35,6 +38,9 @@ signals:
     void photoImagingClicked();
     void systemSettingsClicked();
     void tabClosed(int index);
+    void userInfoClicked();
+    void changePasswordClicked();
+    void logoutClicked();
 
 private slots:
     void onSearchTextChanged(const QString &text);
@@ -42,11 +48,18 @@ private slots:
     void onCardClicked();
     void onTabCloseRequested(int index);
     void onTabChanged(int index);
+    void onAvatarClicked();
+    void onUserInfoAction();
+    void onChangePasswordAction();
+    void onSystemSettingsAction();
+    void onLogoutAction();
 
 private:
     void setupUI();
     void applyStyles();
     void createFunctionCard(const QString &title, const QString &iconPath, QPushButton **button, QHBoxLayout *layout);
+    void setupAvatarMenu();
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     QLabel *logoLabel;
@@ -72,6 +85,13 @@ private:
     QWidget *modelViewPage;
     Widget *photoImagingPage;
     QWidget *systemSettingsPage;
+    
+    // 用户头像下拉菜单相关
+    QMenu *avatarMenu;
+    QAction *userInfoAction;
+    QAction *changePasswordAction;
+    QAction *systemSettingsAction;
+    QAction *logoutAction;
 };
 
 #endif // HOMEPAGE_H

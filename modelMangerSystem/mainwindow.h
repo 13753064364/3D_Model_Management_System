@@ -11,6 +11,7 @@ class StoreSelectionPage;
 class HomePage;
 class NetworkManager;
 class ConfigManager;
+class ChangePasswordDialog;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -38,6 +39,14 @@ private slots:
     void onConnectionTestResult(bool success, const QString &message);
     void onStoreListReceived(const QStringList &storeNames, const QStringList &storeLocations);
     void onLoginSuccessWithDelay();
+    
+    // 用户头像下拉菜单槽函数
+    void onUserInfoClicked();
+    void onChangePasswordClicked();
+    void onLogoutClicked();
+    
+    // 顾客档案页面槽函数
+    void onStartShootingRequested(int customerId);
 
 private:
     void setupUI();

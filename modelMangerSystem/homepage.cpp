@@ -13,14 +13,24 @@
 #include <QComboBox>
 #include <QTextEdit>
 #include <QGridLayout>
+#include <QMenu>
+#include <QAction>
+#include <QMouseEvent>
+#include <QDebug>
 #include "addcustomerpage.h"
 #include "customerprofilepage.h"
 
 HomePage::HomePage(QWidget *parent)
     : QWidget(parent)
+    , avatarMenu(nullptr)
+    , userInfoAction(nullptr)
+    , changePasswordAction(nullptr)
+    , systemSettingsAction(nullptr)
+    , logoutAction(nullptr)
 {
     setupUI();
     applyStyles();
+    setupAvatarMenu();
 }
 
 void HomePage::setupUI()
@@ -52,6 +62,8 @@ void HomePage::setupUI()
     userAvatarLabel = new QLabel();
     userAvatarLabel->setObjectName("userAvatar");
     userAvatarLabel->setFixedSize(40, 40);
+    userAvatarLabel->setCursor(Qt::PointingHandCursor);
+    userAvatarLabel->setAttribute(Qt::WA_Hover, true);
     userLayout->addWidget(userInfoLabel);
     userLayout->addWidget(userAvatarLabel);
 
@@ -61,14 +73,14 @@ void HomePage::setupUI()
 
     mainLayout->addWidget(headerWidget);
 
-    // 创建背景容器
+
     QWidget *backgroundContainer = new QWidget();
     backgroundContainer->setObjectName("backgroundContainer");
     QVBoxLayout *backgroundLayout = new QVBoxLayout(backgroundContainer);
     backgroundLayout->setContentsMargins(0, 0, 0, 0);
     backgroundLayout->setSpacing(0);
 
-    // 创建搜索区域
+
     searchWidget = new QWidget();
     searchWidget->setObjectName("searchWidget");
     searchWidget->setStyleSheet("background-color: transparent;");
@@ -82,7 +94,7 @@ void HomePage::setupUI()
     searchLayout->setSpacing(0);
     searchLayout->setContentsMargins(0, 0, 0, 0);
     
-    // 创建搜索框容器
+
     QWidget *searchContainer = new QWidget();
     searchContainer->setObjectName("searchContainer");
     QHBoxLayout *containerLayout = new QHBoxLayout(searchContainer);
@@ -108,7 +120,7 @@ void HomePage::setupUI()
     connect(searchEdit, &QLineEdit::returnPressed, this, &HomePage::onSearchReturnPressed);
     connect(searchBtn, &QPushButton::clicked, this, &HomePage::onSearchReturnPressed);
 
-    // 创建卡片区域
+
     cardsWidget = new QWidget();
     cardsWidget->setStyleSheet("background-color: transparent;");
     QVBoxLayout *cardsContentLayout = new QVBoxLayout(cardsWidget);
@@ -167,6 +179,9 @@ void HomePage::setupUI()
     connect(tabWidget, &QTabWidget::tabCloseRequested, this, &HomePage::onTabCloseRequested);
     connect(tabWidget, &QTabWidget::currentChanged, this, &HomePage::onTabChanged);
 
+
+    userAvatarLabel->installEventFilter(this);
+
     backgroundLayout->addWidget(tabWidget);
     mainLayout->addWidget(backgroundContainer);
 }
@@ -200,6 +215,10 @@ void HomePage::applyStyles()
         QLabel#userAvatar { 
             background: #409eff; 
             border-radius: 20px; 
+        }
+        QLabel#userAvatar:hover { 
+            background: #66b1ff; 
+            border: 2px solid #409eff;
         }
         
         /* 背景容器样式 */
@@ -485,6 +504,106 @@ void HomePage::onTabChanged(int index)
             homePage->update();
         }
     }
+}
+
+void HomePage::setupAvatarMenu()
+{
+
+    avatarMenu = new QMenu(this);
+    avatarMenu->setObjectName("avatarMenu");
+    
+
+    userInfoAction = new QAction("用户信息", this);
+    changePasswordAction = new QAction("修改密码", this);
+    systemSettingsAction = new QAction("系统设置", this);
+    logoutAction = new QAction("退出登录", this);
+    
+
+    avatarMenu->addAction(userInfoAction);
+    avatarMenu->addAction(changePasswordAction);
+    avatarMenu->addAction(systemSettingsAction);
+    avatarMenu->addSeparator();
+    avatarMenu->addAction(logoutAction);
+    
+
+    connect(userInfoAction, &QAction::triggered, this, &HomePage::onUserInfoAction);
+    connect(changePasswordAction, &QAction::triggered, this, &HomePage::onChangePasswordAction);
+    connect(systemSettingsAction, &QAction::triggered, this, &HomePage::onSystemSettingsAction);
+    connect(logoutAction, &QAction::triggered, this, &HomePage::onLogoutAction);
+    
+
+    avatarMenu->setStyleSheet(R"(
+        QMenu {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 4px 0;
+            min-width: 120px;
+        }
+        QMenu::item {
+            padding: 8px 16px;
+            color: #333333;
+            font-size: 14px;
+        }
+        QMenu::item:selected {
+            background-color: #f0f9ff;
+            color: #409eff;
+        }
+        QMenu::separator {
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 4px 0;
+        }
+    )");
+}
+
+bool HomePage::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == userAvatarLabel && event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        if (mouseEvent->button() == Qt::LeftButton) {
+            onAvatarClicked();
+            return true;
+        }
+    }
+    return QWidget::eventFilter(watched, event);
+}
+
+void HomePage::onAvatarClicked()
+{
+    if (avatarMenu) {
+        QPoint globalPos = userAvatarLabel->mapToGlobal(QPoint(0, userAvatarLabel->height()));
+        avatarMenu->exec(globalPos);
+    }
+}
+
+void HomePage::onUserInfoAction()
+{
+    qDebug() << "用户信息被点击";
+    emit userInfoClicked();
+}
+
+void HomePage::onChangePasswordAction()
+{
+    qDebug() << "修改密码被点击";
+    emit changePasswordClicked();
+}
+
+void HomePage::onSystemSettingsAction()
+{
+    qDebug() << "系统设置被点击";
+    emit systemSettingsClicked();
+}
+
+void HomePage::onLogoutAction()
+{
+    qDebug() << "退出登录被点击";
+    emit logoutClicked();
+}
+
+CustomerProfilePage* HomePage::getCustomerProfilePage() const
+{
+    return customerProfilePage;
 }
 
 

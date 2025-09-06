@@ -1,4 +1,4 @@
-#include "customerprofilepage.h"
+﻿#include "customerprofilepage.h"
 #include <QHeaderView>
 #include <QTableWidgetItem>
 #include <QMessageBox>
@@ -24,28 +24,24 @@ void CustomerProfilePage::setupUI()
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
-    
-    // 创建主容器
+
     QWidget *mainContainer = new QWidget();
     mainContainer->setObjectName("mainContainer");
     QVBoxLayout *containerLayout = new QVBoxLayout(mainContainer);
     containerLayout->setContentsMargins(0, 0, 0, 0);
     containerLayout->setSpacing(0);
-    
-    // 顶部装饰条
+
     QWidget *topBar = new QWidget();
     topBar->setObjectName("topBar");
     topBar->setFixedHeight(4);
     containerLayout->addWidget(topBar);
-    
-    // 卡片容器
+
     QWidget *cardContainer = new QWidget();
     cardContainer->setObjectName("cardContainer");
     QVBoxLayout *cardLayout = new QVBoxLayout(cardContainer);
     cardLayout->setContentsMargins(30, 30, 30, 30);
     cardLayout->setSpacing(24);
-    
-    // 标题区域
+
     QWidget *titleWidget = new QWidget();
     QVBoxLayout *titleLayout = new QVBoxLayout(titleWidget);
     titleLayout->setContentsMargins(0, 0, 0, 0);
@@ -62,14 +58,11 @@ void CustomerProfilePage::setupUI()
     titleLayout->addWidget(titleLabel);
     titleLayout->addWidget(subtitleLabel);
     cardLayout->addWidget(titleWidget);
-    
-    // 搜索栏
+
     cardLayout->addWidget(createSearchBar());
-    
-    // 表格
+
     cardLayout->addWidget(createTableHeader());
-    
-    // 分页栏
+
     cardLayout->addWidget(createPaginationBar());
     
     containerLayout->addWidget(cardContainer);
@@ -83,8 +76,7 @@ QWidget* CustomerProfilePage::createSearchBar()
     QHBoxLayout *searchLayout = new QHBoxLayout(searchWidget);
     searchLayout->setContentsMargins(0, 0, 0, 0);
     searchLayout->setSpacing(16);
-    
-    // 搜索输入框容器
+
     QWidget *searchContainer = new QWidget();
     searchContainer->setObjectName("searchContainer");
     QHBoxLayout *searchContainerLayout = new QHBoxLayout(searchContainer);
@@ -101,15 +93,13 @@ QWidget* CustomerProfilePage::createSearchBar()
     
     searchContainerLayout->addWidget(searchEdit);
     searchContainerLayout->addWidget(searchBtn);
-    
-    // 操作按钮
+
     addBtn = new QPushButton("➕ 新增");
     addBtn->setObjectName("addBtn");
     
     deleteBtn = new QPushButton("🗑️ 删除");
     deleteBtn->setObjectName("deleteBtn");
-    
-    // 连接信号
+
     connect(searchBtn, &QPushButton::clicked, this, &CustomerProfilePage::onSearchClicked);
     connect(addBtn, &QPushButton::clicked, this, &CustomerProfilePage::onAddClicked);
     connect(deleteBtn, &QPushButton::clicked, this, &CustomerProfilePage::onDeleteClicked);
@@ -128,17 +118,15 @@ QWidget* CustomerProfilePage::createTableHeader()
     QVBoxLayout *tableLayout = new QVBoxLayout(tableWidget);
     tableLayout->setContentsMargins(0, 0, 0, 0);
     tableLayout->setSpacing(0);
-    
-    // 表格
+
     customerTable = new QTableWidget();
     customerTable->setObjectName("customerTable");
-    customerTable->setColumnCount(7);
+    customerTable->setColumnCount(8);
     
     QStringList headers;
-    headers << "姓名" << "性别" << "年龄" << "手机号" << "问题项" << "上次检测时间" << "操作";
+    headers << "" << "姓名" << "性别" << "年龄" << "手机号" << "问题项" << "上次检测时间" << "操作";
     customerTable->setHorizontalHeaderLabels(headers);
-    
-    // 设置表格属性
+
     customerTable->setAlternatingRowColors(true);
     customerTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     customerTable->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -146,8 +134,18 @@ QWidget* CustomerProfilePage::createTableHeader()
     customerTable->horizontalHeader()->setStretchLastSection(true);
     customerTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     customerTable->verticalHeader()->setVisible(false);
-    
-    // 连接表格点击信号
+
+    customerTable->setColumnWidth(0, 80);   // 头像列
+    customerTable->setColumnWidth(1, 120);  // 姓名列
+    customerTable->setColumnWidth(2, 80);   // 性别列
+    customerTable->setColumnWidth(3, 80);   // 年龄列
+    customerTable->setColumnWidth(4, 150);  // 电话列
+    customerTable->setColumnWidth(5, 200);  // 问题列
+    customerTable->setColumnWidth(6, 120);  // 最后测试列
+    customerTable->setColumnWidth(7, 180);  // 操作列
+
+    customerTable->verticalHeader()->setDefaultSectionSize(60);
+
     connect(customerTable, &QTableWidget::cellClicked, this, &CustomerProfilePage::onTableItemClicked);
     
     tableLayout->addWidget(customerTable);
@@ -163,18 +161,18 @@ QWidget* CustomerProfilePage::createPaginationBar()
     paginationLayout->setContentsMargins(0, 0, 0, 0);
     paginationLayout->setSpacing(16);
     
-    // 页面信息
+
     pageInfoLabel = new QLabel();
     pageInfoLabel->setObjectName("pageInfoLabel");
     
-    // 分页按钮
+
     prevPageBtn = new QPushButton("◀ 上一页");
     prevPageBtn->setObjectName("pageBtn");
     
     nextPageBtn = new QPushButton("下一页 ▶");
     nextPageBtn->setObjectName("pageBtn");
     
-    // 页面大小选择
+
     QLabel *pageSizeLabel = new QLabel("条/页:");
     pageSizeLabel->setObjectName("paginationLabel");
     
@@ -183,7 +181,7 @@ QWidget* CustomerProfilePage::createPaginationBar()
     pageSizeCombo->addItems(QStringList() << "6" << "10" << "20" << "50");
     pageSizeCombo->setCurrentText("10");
     
-    // 跳转输入
+
     QLabel *jumpLabel = new QLabel("跳至:");
     jumpLabel->setObjectName("paginationLabel");
     
@@ -194,8 +192,7 @@ QWidget* CustomerProfilePage::createPaginationBar()
     
     jumpBtn = new QPushButton("跳转");
     jumpBtn->setObjectName("jumpBtn");
-    
-    // 连接信号
+
     connect(prevPageBtn, &QPushButton::clicked, this, &CustomerProfilePage::onPageChanged);
     connect(nextPageBtn, &QPushButton::clicked, this, &CustomerProfilePage::onPageChanged);
     connect(pageSizeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &CustomerProfilePage::onPageSizeChanged);
@@ -333,17 +330,67 @@ void CustomerProfilePage::applyStyles()
             gridline-color: #e2e8f0;
             selection-background-color: #667eea;
             selection-color: #ffffff;
+            font-size: 18px;
         }
         
         QTableWidget#customerTable::item {
-            padding: 16px 12px;
+            padding: 20px 16px;
             border-bottom: 1px solid #f1f5f9;
-            font-size: 16px;
+            font-size: 18px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        QTableWidget#customerTable::item[column="7"] {
+            color: #409eff;
+            text-decoration: underline;
+            font-size: 18px;
         }
         
         QTableWidget#customerTable::item:selected {
             background: #667eea;
             color: #ffffff;
+            border: none;
+            outline: none;
+        }
+        
+        QTableWidget#customerTable::item:selected[column="7"] {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+        
+        /* 确保选中时所有列的文字都显示为白色 */
+        QTableWidget#customerTable::item:selected {
+            color: #ffffff !important;
+            background: #667eea !important;
+        }
+        
+        /* 操作列选中时保持白色和下划线 */
+        QTableWidget#customerTable::item:selected[column="7"] {
+            color: #ffffff !important;
+            text-decoration: underline;
+            background: #667eea !important;
+        }
+        
+        /* 确保所有表格项在选中时都显示白色文字 */
+        QTableWidget#customerTable::item:selected * {
+            color: #ffffff !important;
+        }
+        
+        /* 确保操作列始终显示蓝色 */
+        QTableWidget#customerTable::item[column="7"]:hover {
+            color: #409eff;
+            text-decoration: underline;
+        }
+        
+        /* 移除选中时的虚线边框 */
+        QTableWidget#customerTable {
+            outline: none;
+        }
+        
+        QTableWidget#customerTable::item:focus {
+            outline: none;
+            border: none;
         }
         
         QTableWidget#customerTable::item:hover {
@@ -354,8 +401,8 @@ void CustomerProfilePage::applyStyles()
             background: #f8fafc;
             color: #4a5568;
             font-weight: 600;
-            font-size: 16px;
-            padding: 16px 12px;
+            font-size: 18px;
+            padding: 20px 16px;
             border: none;
             border-bottom: 2px solid #e2e8f0;
             border-right: 1px solid #e2e8f0;
@@ -448,7 +495,6 @@ void CustomerProfilePage::applyStyles()
 
 void CustomerProfilePage::updateCustomerList()
 {
-    // 模拟数据
     customerTable->setRowCount(10);
     
     QStringList names = {"张三", "李四", "王五", "赵六", "钱七", "孙八", "周九", "吴十", "郑十一", "王十二"};
@@ -463,46 +509,49 @@ void CustomerProfilePage::updateCustomerList()
     for (int i = 0; i < 10; ++i) {
         // 头像列
         QTableWidgetItem *avatarItem = new QTableWidgetItem("👤");
-        avatarItem->setTextAlignment(Qt::AlignCenter);
+        avatarItem->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
         avatarItem->setFlags(avatarItem->flags() & ~Qt::ItemIsEditable);
         customerTable->setItem(i, 0, avatarItem);
         
         // 姓名
         QTableWidgetItem *nameItem = new QTableWidgetItem(names[i]);
+        nameItem->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
         nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsEditable);
         customerTable->setItem(i, 1, nameItem);
         
         // 性别
         QTableWidgetItem *genderItem = new QTableWidgetItem(genders[i]);
-        genderItem->setTextAlignment(Qt::AlignCenter);
+        genderItem->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
         genderItem->setFlags(genderItem->flags() & ~Qt::ItemIsEditable);
         customerTable->setItem(i, 2, genderItem);
         
         // 年龄
         QTableWidgetItem *ageItem = new QTableWidgetItem(ages[i]);
-        ageItem->setTextAlignment(Qt::AlignCenter);
+        ageItem->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
         ageItem->setFlags(ageItem->flags() & ~Qt::ItemIsEditable);
         customerTable->setItem(i, 3, ageItem);
         
         // 手机号
         QTableWidgetItem *phoneItem = new QTableWidgetItem(phones[i]);
+        phoneItem->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
         phoneItem->setFlags(phoneItem->flags() & ~Qt::ItemIsEditable);
         customerTable->setItem(i, 4, phoneItem);
         
         // 问题项
         QTableWidgetItem *issueItem = new QTableWidgetItem(issues[i]);
+        issueItem->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
         issueItem->setFlags(issueItem->flags() & ~Qt::ItemIsEditable);
         customerTable->setItem(i, 5, issueItem);
         
         // 上次检测时间
         QTableWidgetItem *testItem = new QTableWidgetItem(lastTests[i]);
-        testItem->setTextAlignment(Qt::AlignCenter);
+        testItem->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
         testItem->setFlags(testItem->flags() & ~Qt::ItemIsEditable);
         customerTable->setItem(i, 6, testItem);
         
         // 操作列
-        QTableWidgetItem *actionItem = new QTableWidgetItem("查看 | 编辑 | 删除");
-        actionItem->setTextAlignment(Qt::AlignCenter);
+        QTableWidgetItem *actionItem = new QTableWidgetItem("详情  开始拍摄");
+        actionItem->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
         actionItem->setFlags(actionItem->flags() & ~Qt::ItemIsEditable);
         actionItem->setData(Qt::UserRole, i + 1); // 存储客户ID
         customerTable->setItem(i, 7, actionItem);
@@ -524,7 +573,7 @@ void CustomerProfilePage::onSearchClicked()
 {
     QString keyword = searchEdit->text().trimmed();
     qDebug() << "搜索关键词:" << keyword;
-    // 这里实现搜索逻辑
+
 }
 
 void CustomerProfilePage::onAddClicked()
@@ -583,12 +632,25 @@ void CustomerProfilePage::onJumpToPage()
 
 void CustomerProfilePage::onTableItemClicked(int row, int column)
 {
-    if (column == 7) { // 操作列
+    if (column == 7) {
         QTableWidgetItem *item = customerTable->item(row, column);
         if (item) {
             int customerId = item->data(Qt::UserRole).toInt();
-            // 这里可以根据点击位置判断是查看、编辑还是删除
-            emit viewCustomerRequested(customerId);
+            
+
+            QPoint clickPos = customerTable->mapFromGlobal(QCursor::pos());
+            QRect itemRect = customerTable->visualItemRect(item);
+            int relativeX = clickPos.x() - itemRect.x();
+            int itemWidth = itemRect.width();
+            
+            // "详情  开始拍摄" 中，"详情"大约占前1/3，"开始拍摄"占后2/3
+            if (relativeX < itemWidth * 0.4) {
+                // "详情"
+                emit viewCustomerRequested(customerId);
+            } else {
+                // "开始拍摄"
+                emit startShootingRequested(customerId);
+            }
         }
     }
 }
